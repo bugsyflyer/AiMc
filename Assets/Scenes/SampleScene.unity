@@ -445,8 +445,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   perlinScale: 0.1
   heightScale: 10
+  waterSpawnChance: 0.02
   dirtPrefab: {fileID: 2784272423273954973, guid: a24a0e45415be114583b2343897e9d1d, type: 3}
   stonePrefab: {fileID: 7610571116426333493, guid: 48c4a0b3332d11e4fa0793bfca37d32d, type: 3}
+  grassPrefab: {fileID: 0}
+  woodPrefab: {fileID: 0}
+  leavesPrefab: {fileID: 0}
+  waterPrefab: {fileID: 0}
 --- !u!4 &1758881930
 Transform:
   m_ObjectHideFlags: 0
