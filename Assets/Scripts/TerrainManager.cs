@@ -4,7 +4,7 @@ public class TerrainManager : MonoBehaviour
 {
     public GameObject player;
     public GameObject chunkPrefab;
-    public int viewDistance = 2;
+    public int viewDistance = 1;
     private int seed;
 
     private Vector3 lastPlayerChunkPos;
@@ -28,7 +28,7 @@ public class TerrainManager : MonoBehaviour
         if (playerChunkPos != lastPlayerChunkPos)
         {
             lastPlayerChunkPos = playerChunkPos;
-            GenerateChunksAroundPlayer();
+            //GenerateChunksAroundPlayer();
         }
     }
 

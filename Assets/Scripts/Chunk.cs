@@ -209,7 +209,7 @@ public class Chunk : MonoBehaviour
     int chunkSeed = seed + (int)(Random.Range(0, 100000) + Random.Range(0, 100000)); // Unique seed for each chunk
     // Randomly generate trees on the surface
     System.Random random = new System.Random(chunkSeed); // Use System.Random for random values
-    float treeSpawnProbability = 0.01f;
+    float treeSpawnProbability = 0.005f;
 
     for (int x = 0; x < ChunkSize; x++)
     {
