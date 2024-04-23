@@ -3,6 +3,7 @@ public enum BlockType
     Air,
     Stone,
     Dirt,
+    Grass,
     Wood,
     Leaves,
     IronOre
