@@ -1,5 +1,11 @@
 using UnityEngine;
 
+public enum BiomeType
+{
+    Normal,
+    Plains
+}
+
 public class Chunk : MonoBehaviour
 {
     public const int ChunkSize = 32; // Size of the chunk in blocks
@@ -8,6 +14,9 @@ public class Chunk : MonoBehaviour
     public float perlinScale = 0.1f; // Scale factor for Perlin noise
     public float heightScale = 10f; // Scale factor for terrain height
     public float waterSpawnChance = 0.02f;
+    
+    public BiomeType biomeType = BiomeType.Normal;
+    public float plainsChance = 0.1f;
     
     public GameObject dirtPrefab;
     public GameObject stonePrefab;
@@ -21,12 +30,23 @@ public class Chunk : MonoBehaviour
     // Generate terrain for this chunk
     public void GenerateTerrain(int seed)
     {
+        bool isPlains = (Random.value < plainsChance && biomeType != BiomeType.Plains);
         for (int x = 0; x < ChunkSize; x++)
         {
             for (int z = 0; z < ChunkSize; z++)
             {
                 float perlinValue = Mathf.PerlinNoise((transform.position.x + x + seed) * perlinScale, (transform.position.z + z + seed) * perlinScale);
                 int height = Mathf.FloorToInt(perlinValue * heightScale);
+                float plainsHeight = 0.0f;
+                
+                if (isPlains)
+                {
+                    // Adjust height for plains biome (flatter terrain)
+                    plainsHeight = (perlinValue * heightScale * 0.5f); // Example: Half the height
+                }
+                
+                // Smooth transitions based on surrounding chunks
+                SmoothTerrainTransition(x, z, plainsHeight);
 
                 for (int y = 0; y < ChunkSize; y++)
                 {
@@ -51,7 +71,10 @@ public class Chunk : MonoBehaviour
             }
         }
 
-        GenerateTrees(seed);
+        if (!isPlains)
+        {
+            GenerateTrees(seed);   
+        }
     }
 
     // Update chunk visuals based on blocks array
@@ -116,6 +139,68 @@ public class Chunk : MonoBehaviour
             // Add cases for other block types as needed
             default:
                 return null; // Return null for unknown block types
+        }
+    }
+    
+    private void SmoothTerrainTransition(int x, int z, float height)
+    {
+        // Get neighboring chunks
+        Chunk leftChunk = GetNeighborChunk(x - 1, z);
+        Chunk rightChunk = GetNeighborChunk(x + 1, z);
+        Chunk frontChunk = GetNeighborChunk(x, z + 1);
+        Chunk backChunk = GetNeighborChunk(x, z - 1);
+
+        // Check and interpolate heights based on neighboring chunks
+        if (leftChunk != null && leftChunk.biomeType != biomeType)
+        {
+            height = Mathf.Lerp(height, leftChunk.GetTerrainHeightAtPosition(ChunkSize - 1, z), 0.5f);
+        }
+        if (rightChunk != null && rightChunk.biomeType != biomeType)
+        {
+            height = Mathf.Lerp(height, rightChunk.GetTerrainHeightAtPosition(0, z), 0.5f);
+        }
+        if (frontChunk != null && frontChunk.biomeType != biomeType)
+        {
+            height = Mathf.Lerp(height, frontChunk.GetTerrainHeightAtPosition(x, 0), 0.5f);
+        }
+        if (backChunk != null && backChunk.biomeType != biomeType)
+        {
+            height = Mathf.Lerp(height, backChunk.GetTerrainHeightAtPosition(x, ChunkSize - 1), 0.5f);
+        }
+    }
+    
+    private Chunk GetNeighborChunk(int x, int z)
+    {
+        // Calculate the position of the neighboring chunk based on the current chunk's position
+        Vector3 neighborChunkPos = transform.position + new Vector3(x * ChunkSize, 0, z * ChunkSize);
+
+        // Get the Chunk component of the neighboring chunk if it exists
+        Collider[] colliders = Physics.OverlapBox(neighborChunkPos + new Vector3(ChunkSize / 2f, 0, ChunkSize / 2f), new Vector3(ChunkSize / 2f, ChunkSize / 2f, ChunkSize / 2f));
+        foreach (var collider in colliders)
+        {
+            Chunk chunk = collider.GetComponent<Chunk>();
+            if (chunk != null)
+            {
+                return chunk;
+            }
+        }
+
+        // Return null if no neighboring chunk is found
+        return null;
+    }
+    
+    private int GetTerrainHeightAtPosition(int x, int z)
+    {
+        // Ensure that x and z are within valid range
+        if (x >= 0 && x < ChunkSize && z >= 0 && z < ChunkSize)
+        {
+            // Access the terrain height at the specified position in the blocks array
+            return blocks[x, 0, z].height; // Assuming height information is stored in blocks array
+        }
+        else
+        {
+            // Return a default height or handle out-of-range positions
+            return 0; // Default height example
         }
     }
     
