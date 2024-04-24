@@ -17,6 +17,8 @@ public class Chunk : MonoBehaviour
     
     public BiomeType biomeType = BiomeType.Normal;
     public float plainsChance = 0.1f;
+
+    public bool initialGen;
     
     public GameObject dirtPrefab;
     public GameObject stonePrefab;
@@ -24,7 +26,12 @@ public class Chunk : MonoBehaviour
     public GameObject woodPrefab;
     public GameObject leavesPrefab;
     public GameObject waterPrefab;
-    
+
+    public void setInitial(bool initial)
+    {
+        initialGen = initial;
+    }
+
 
 
     // Generate terrain for this chunk
@@ -46,26 +53,26 @@ public class Chunk : MonoBehaviour
                 }
                 
                 // Smooth transitions based on surrounding chunks
-                SmoothTerrainTransition(x, z, plainsHeight);
+                //SmoothTerrainTransition(x, z, plainsHeight);
 
                 for (int y = 0; y < ChunkSize; y++)
                 {
                     // Generate grass on top, dirt below grass, and stone below dirt based on height
                     if (y == height - 1)
                     {
-                        blocks[x, y, z] = new Block(BlockType.Dirt);
+                        blocks[x, y, z] = new Block(BlockType.Dirt, height);
                     }
                     else if (y == height)
                     {
-                        blocks[x, y, z] = new Block(BlockType.Grass);
+                        blocks[x, y, z] = new Block(BlockType.Grass, height);
                     }
                     else if (y < height)
                     {
-                        blocks[x, y, z] = new Block(BlockType.Stone);
+                        blocks[x, y, z] = new Block(BlockType.Stone, height);
                     }
                     else
                     {
-                        blocks[x, y, z] = new Block(BlockType.Air); // Empty space above terrain
+                        blocks[x, y, z] = new Block(BlockType.Air, height); // Empty space above terrain
                     }
                 }
             }
