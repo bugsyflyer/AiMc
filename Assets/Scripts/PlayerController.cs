@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private Camera playerCamera;
     
-    public float mouseSensitivity = 100f;
+    public float mouseSensitivity = 50f;
     public float maxVerticalAngle = 80f; // Limit vertical camera rotation
 
     private float verticalRotation = 0f;
