@@ -2,39 +2,70 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float walkSpeed = 12f;
-    public float sprintSpeed = 20f;
+    public float walkSpeed = 4f;
+    public float sprintSpeed = 7f;
     public float jumpHeight = 1.5f;
     public int startingHealth = 100;
     public float fallDamageThreshold = 9f;
     public float fallDamageMultiplier = 10f;
+    public float maxDistance = 10f;
+
+    public GameObject hand;
+    public GameObject sword;
+    public GameObject pickaxe;
 
     private int currentHealth;
     private bool isGrounded;
     private Rigidbody rb;
-    private Camera playerCamera;
-    
-    public float mouseSensitivity = 50f;
-    public float maxVerticalAngle = 80f; // Limit vertical camera rotation
+
+    public Transform cameraTransform;
+    public float mouseSensitivity = 2f;
+    public float maxLookUpAngle = 90f;
+    public float maxLookDownAngle = -90f;
 
     private float verticalRotation = 0f;
+    
+    public LayerMask targetLayerMask;
+    
+    public LayerMask blockLayerMask;
+    
+    public LayerMask ignoredLayers;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        playerCamera = GetComponentInChildren<Camera>();
         currentHealth = startingHealth;
-        playerCamera = GetComponentInChildren<Camera>();
         Cursor.lockState = CursorLockMode.Locked;
     }
 
     void Update()
     {
+        // Camera rotation
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
+
+        verticalRotation -= mouseY;
+        verticalRotation = Mathf.Clamp(verticalRotation, maxLookDownAngle, maxLookUpAngle);
+
+        transform.Rotate(Vector3.up * mouseX);
+        cameraTransform.localRotation = Quaternion.Euler(verticalRotation, 0f, 0f);
+
+        // Rotate player horizontally based on mouse input
+        transform.Rotate(Vector3.up * mouseX);
         MovePlayer();
         HandleJump();
         HandleSprint();
         HandleToolUsage();
-        HandleMouseLook();
+    }
+
+    private void FixedUpdate()
+    {
+        // Falling and fall damage
+        if (rb.velocity.y < -fallDamageThreshold)
+        {
+            int damage = Mathf.RoundToInt(Mathf.Abs(rb.velocity.y - fallDamageThreshold));
+            TakeDamage(damage);
+        }
     }
 
     void MovePlayer()
@@ -47,18 +78,6 @@ public class PlayerController : MonoBehaviour
         rb.MovePosition(rb.position + moveDirection);
     }
     
-    void HandleMouseLook()
-    {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
-
-        transform.Rotate(Vector3.up * mouseX); // Rotate the player horizontally
-
-        verticalRotation -= mouseY;
-        verticalRotation = Mathf.Clamp(verticalRotation, -maxVerticalAngle, maxVerticalAngle); // Clamp vertical rotation
-
-        playerCamera.transform.localRotation = Quaternion.Euler(verticalRotation, 0f, 0f); // Rotate the camera vertically
-    }
 
     void HandleJump()
     {
@@ -78,8 +97,56 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            // Code to handle swinging a tool (sword, pickaxe, etc.)
-            // Example: ToolSwing();
+            Debug.Log("button pressed");
+            RaycastHit hit;
+            if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, maxDistance, blockLayerMask))
+            {
+                Debug.Log("hit?");
+                BlockWrapper rayBlockWrapper = hit.collider.GetComponent<BlockWrapper>();
+                if (rayBlockWrapper != null)
+                {
+                    rayBlockWrapper.Break();
+                    Debug.Log("not nu;;");
+                    if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, 10000,targetLayerMask))
+                    {
+                        Debug.Log("go");
+                        Chunk rayChunk = hit.collider.GetComponent<Chunk>();
+                        Debug.Log(rayChunk);
+                        int blockWrapperX = ((int)rayBlockWrapper.getBlockX());
+                        int blockWrapperY = ((int)rayBlockWrapper.getBlockY() - 32);
+                        int blockWrapperZ = ((int)rayBlockWrapper.getBlockZ());
+                        if ((int)rayChunk.getChunkX() < 0)
+                        {
+                            blockWrapperX = ((int)rayChunk.getChunkX()-(int)rayBlockWrapper.getBlockX());
+                        }
+                        else
+                        {
+                        }
+
+                        if ((int)rayChunk.getChunkY() < 0)
+                        {
+                            blockWrapperZ = ((int)rayChunk.getChunkZ()-(int)rayBlockWrapper.getBlockZ());
+                        }
+                        else
+                        {
+                        }
+
+
+                        Debug.Log(blockWrapperX + ","+blockWrapperY+"," + blockWrapperZ);
+                        Block block = rayChunk.getBlock(blockWrapperX, blockWrapperY, blockWrapperZ);
+                        block.Break();
+                        Debug.Log("brokennnnnn");
+                        //Now you can use methods or properties of your Block class
+                        rayChunk.UpdateChunk();
+                        
+                    } else
+                    {
+                        Debug.Log("fail");
+                    }
+
+                }
+                
+            }
         }
 
         if (Input.GetMouseButtonDown(1))
@@ -89,8 +156,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    
+
     private void OnCollisionEnter(Collision collision)
     {
+        // Check if collision is with ignored layers
+        if (((1 << collision.gameObject.layer) & ignoredLayers) != 0)
+        {
+            // Collided with an ignored layer, so return without processing
+            return;
+        }
         // Check if player is grounded
         foreach (ContactPoint contact in collision.contacts)
         {

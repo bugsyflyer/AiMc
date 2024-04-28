@@ -228,7 +228,7 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -315,7 +315,7 @@ GameObject:
   - component: {fileID: 1016496977}
   - component: {fileID: 1016496976}
   - component: {fileID: 1016496975}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -340,8 +340,23 @@ MonoBehaviour:
   startingHealth: 100
   fallDamageThreshold: 9
   fallDamageMultiplier: 10
+  maxDistance: 10
+  hand: {fileID: 0}
+  sword: {fileID: 0}
+  pickaxe: {fileID: 0}
+  cameraTransform: {fileID: 963194228}
   mouseSensitivity: 100
-  maxVerticalAngle: 80
+  maxLookUpAngle: 90
+  maxLookDownAngle: -90
+  targetLayerMask:
+    serializedVersion: 2
+    m_Bits: 72
+  blockLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
+  ignoredLayers:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!54 &1016496976
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -489,11 +504,11 @@ MonoBehaviour:
   biomeType: 0
   plainsChance: 0.1
   initialGen: 0
-  dirtPrefab: {fileID: 5169523878361790012, guid: 589a453c9f62764469b09b3d5025a647, type: 3}
-  stonePrefab: {fileID: 5260938649771456815, guid: a7668243761e3184a88b894472cbe38f, type: 3}
-  grassPrefab: {fileID: 5464943930963304848, guid: 34abec35e88f1484b8feef636bcb0f74, type: 3}
-  woodPrefab: {fileID: 630933676551301083, guid: 61347c134cdf6aa4685e8a495e64ca11, type: 3}
-  leavesPrefab: {fileID: 4657787916657541418, guid: e9583ec99903dfb40a420de37d0428b7, type: 3}
+  dirtPrefab: {fileID: 5363048689132303938, guid: 1b77d60007e426e4a8972cced4651d83, type: 3}
+  stonePrefab: {fileID: 3261941439026709056, guid: c2ec7a6c85cad404e94fc375df565334, type: 3}
+  grassPrefab: {fileID: 284828820230813672, guid: 5903f30cfe82c434ab98eb9b8cab6e83, type: 3}
+  woodPrefab: {fileID: 4269519478641738600, guid: 74901a62d0386a84fb82ca954fd95197, type: 3}
+  leavesPrefab: {fileID: 6325048894435533183, guid: 289054273e41c4042bf79aa7dca496e4, type: 3}
   waterPrefab: {fileID: 0}
 --- !u!4 &1758881930
 Transform:

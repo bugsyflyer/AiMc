@@ -35,6 +35,7 @@ public class TerrainManager : MonoBehaviour
         }
     }
 
+
     private void GenerateChunksAroundPlayer(int viewDistance, bool isInitialGen)
     {
         for (int x = -viewDistance; x <= viewDistance; x++)
@@ -104,7 +105,7 @@ public class TerrainManager : MonoBehaviour
         newChunk.UpdateChunk(); // Update visuals
     }
 
-    private Vector3 GetChunkPosition(Vector3 position)
+    public static Vector3 GetChunkPosition(Vector3 position)
     {
         int x = Mathf.FloorToInt(position.x / Chunk.ChunkSize) * Chunk.ChunkSize;
         int y = Mathf.FloorToInt(position.y / Chunk.ChunkSize) * Chunk.ChunkSize;

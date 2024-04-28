@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2698074337848236109}
   - component: {fileID: 1630946174462192484}
-  m_Layer: 0
+  - component: {fileID: -1593082620288138903}
+  m_Layer: 6
   m_Name: ChunkPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -50,9 +51,22 @@ MonoBehaviour:
   biomeType: 0
   plainsChance: 0.1
   initialGen: 0
-  dirtPrefab: {fileID: 1621997556031092413, guid: eccd9ab9db1a98745ab69edc705e635d, type: 3}
-  stonePrefab: {fileID: 38486909173774027, guid: c6699f5cc3fabed4a93dd0e3a420ee67, type: 3}
-  grassPrefab: {fileID: 809310742247584360, guid: c0951c3c553a2134f9f41697a2ab8fd3, type: 3}
-  woodPrefab: {fileID: 9148056586707578724, guid: b4a45eb1ab5cbec48914aefe2898e721, type: 3}
-  leavesPrefab: {fileID: 2190285455613748626, guid: f0dca0edf0a356241891a7313b103dd9, type: 3}
+  dirtPrefab: {fileID: 5363048689132303938, guid: 1b77d60007e426e4a8972cced4651d83, type: 3}
+  stonePrefab: {fileID: 3261941439026709056, guid: c2ec7a6c85cad404e94fc375df565334, type: 3}
+  grassPrefab: {fileID: 284828820230813672, guid: 5903f30cfe82c434ab98eb9b8cab6e83, type: 3}
+  woodPrefab: {fileID: 4269519478641738600, guid: 74901a62d0386a84fb82ca954fd95197, type: 3}
+  leavesPrefab: {fileID: 6325048894435533183, guid: 289054273e41c4042bf79aa7dca496e4, type: 3}
   waterPrefab: {fileID: 0}
+--- !u!65 &-1593082620288138903
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5995364280248323639}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 32, y: 64, z: 32}
+  m_Center: {x: 0, y: 0, z: 0}
