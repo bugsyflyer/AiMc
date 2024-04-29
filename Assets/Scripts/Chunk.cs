@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public enum BiomeType
 {
@@ -19,6 +20,9 @@ public class Chunk : MonoBehaviour
     public float plainsChance = 0.1f;
 
     public bool initialGen;
+    public int chunkNumber;
+
+    int blockCount = 0;
 
     public GameObject dirtPrefab;
     public GameObject stonePrefab;
@@ -26,6 +30,8 @@ public class Chunk : MonoBehaviour
     public GameObject woodPrefab;
     public GameObject leavesPrefab;
     public GameObject waterPrefab;
+
+    public TerrainManager terrainManager;
 
     public void setInitial(bool initial)
     {
@@ -45,6 +51,16 @@ public class Chunk : MonoBehaviour
         return transform.position.z;
     }
 
+    public void setChunkNumber(int number)
+    {
+        chunkNumber = number;
+    }
+
+    public int getChunkNumber()
+    {
+        return chunkNumber;
+    }
+
     public Block getBlock(int x, int y, int z)
     {
         return blocks[x, y, z];
@@ -53,7 +69,7 @@ public class Chunk : MonoBehaviour
 
 
     // Generate terrain for this chunk
-    public void GenerateTerrain(int seed)
+    public void GenerateTerrain(int seed, int chunkCount)
     {
         bool isPlains = (Random.value < plainsChance && biomeType != BiomeType.Plains);
         for (int x = 0; x < ChunkSize; x++)
@@ -79,19 +95,27 @@ public class Chunk : MonoBehaviour
                     // Generate grass on top, dirt below grass, and stone below dirt based on height
                     if (y == height - 1)
                     {
-                        blocks[x, y, z] = new Block(BlockType.Dirt, height, this);
+                        blocks[x, y, z] = new Block(BlockType.Dirt, height, this, blockCount, chunkCount);
+                        blockCount++;
+
                     }
                     else if (y == height)
                     {
-                        blocks[x, y, z] = new Block(BlockType.Grass, height, this);
+                        blocks[x, y, z] = new Block(BlockType.Grass, height, this, blockCount, chunkCount);
+                        blockCount++;
                     }
                     else if (y < height)
                     {
-                        blocks[x, y, z] = new Block(BlockType.Stone, height, this);
+                        blocks[x, y, z] = new Block(BlockType.Stone, height, this, blockCount, chunkCount);
+                        blockCount++;
                     }
                     else
                     {
-                        blocks[x, y, z] = new Block(BlockType.Air, height, this); // Empty space above terrain
+                        blocks[x, y, z] = new Block(BlockType.Air, height, this, blockCount, chunkCount);
+                        blockCount++; // Empty space above terrain
+                        //add blocks[x,y,z] to blocks in terrain manager at chunkcount, blockcount
+                        terrainManager.blocks[chunkCount][blockCount] = blocks[x,y,z];
+
                     }
                 }
             }
@@ -123,6 +147,9 @@ public class Chunk : MonoBehaviour
                     if (exposedToAir)
                     {
                         GameObject blockPrefab = GetPrefabForBlock(currentBlock.getType()); // Get prefab based on block type
+                        BlockWrapper newBlock = blockPrefab.GetComponent<BlockWrapper>();
+                        newBlock.setBlockNumber(currentBlock.blockNumber);
+                        newBlock.setChunkNumber(currentBlock.chunkNumber);
                         if (blockPrefab != null)
                         {
                             Vector3 blockPosition = transform.position + new Vector3(x, y, z); // Calculate block position relative to chunk

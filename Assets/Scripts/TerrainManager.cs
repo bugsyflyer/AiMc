@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class TerrainManager : MonoBehaviour
 {
@@ -7,12 +8,25 @@ public class TerrainManager : MonoBehaviour
     public int viewDistance = 2;
     private int seed;
 
+    
+    static int chunkCount = 0;
+
+    //public ArrayList<Chunks> chunkList = new ArrayList<Chunks>();
+    //2d arraylist of blocks
+    public List<List<Block>> blocks = new List<List<Block>>();
+
     private Vector3 lastPlayerChunkPos;
 
     void Start()
     {
         GenerateWorld();
         
+    }
+
+    public Block getBlock(int x, int z)
+    {
+        //returns the block in blocks at given x and z
+        return blocks[x][z];
     }
     
     void GenerateWorld()
@@ -50,7 +64,7 @@ public class TerrainManager : MonoBehaviour
                 if (isChunkVisible)
                 {
                     // Generate or update the chunk if it's within view distance
-                    GenerateChunk(chunkPos, isInitialGen);
+                    GenerateChunk(chunkPos, isInitialGen, chunkCount);
                 }
                 else
                 {
@@ -79,7 +93,7 @@ public class TerrainManager : MonoBehaviour
         }
     }
 
-    private void GenerateChunk(Vector3 position, bool isInitialGen)
+    private void GenerateChunk(Vector3 position, bool isInitialGen, int chunkCount)
     {
         Collider[] colliders = Physics.OverlapBox(position + new Vector3(Chunk.ChunkSize / 2f, 0, Chunk.ChunkSize / 2f),
             new Vector3(Chunk.ChunkSize / 2f, Chunk.ChunkSize / 2f, Chunk.ChunkSize / 2f));
@@ -100,9 +114,12 @@ public class TerrainManager : MonoBehaviour
         GameObject newChunkObj = Instantiate(chunkPrefab, position, Quaternion.identity);
         newChunkObj.transform.SetParent(transform); // Attach to TerrainManager object
         Chunk newChunk = newChunkObj.GetComponent<Chunk>();
+        newChunk.setChunkNumber(chunkCount);
+        //chunkList.Add(newChunk);
         newChunk.setInitial(isInitialGen);
-        newChunk.GenerateTerrain(seed); // Generate terrain for the chunk
+        newChunk.GenerateTerrain(seed, chunkCount); // Generate terrain for the chunk
         newChunk.UpdateChunk(); // Update visuals
+        chunkCount++;
     }
 
     public static Vector3 GetChunkPosition(Vector3 position)

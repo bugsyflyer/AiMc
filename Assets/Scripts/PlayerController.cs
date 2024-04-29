@@ -31,6 +31,8 @@ public class PlayerController : MonoBehaviour
     
     public LayerMask ignoredLayers;
 
+    public TerrainManager terrainManager;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -108,33 +110,8 @@ public class PlayerController : MonoBehaviour
                 {
                     rayBlockWrapper.Break();
                     Debug.Log("not nu;;");
-                    if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, 10000,targetLayerMask))
-                    {
-                        Debug.Log("go");
-                        Chunk rayChunk = hit.collider.GetComponent<Chunk>();
-                        Debug.Log(rayChunk);
-                        int blockWrapperX = ((int)rayBlockWrapper.getBlockX());
-                        int blockWrapperY = ((int)rayBlockWrapper.getBlockY() - 32);
-                        int blockWrapperZ = ((int)rayBlockWrapper.getBlockZ());
-                        int chunkX = ((int)rayChunk.getChunkX());
-                        int chunkY = ((int)rayChunk.getChunkX());
-                        int chunkZ = ((int)rayChunk.getChunkZ());
-                        blockWrapperX = (blockWrapperX - chunkX);
-                        blockWrapperZ = (blockWrapperZ - chunkZ);
-
-
-                        Debug.Log(blockWrapperX + ","+blockWrapperY+"," + blockWrapperZ);
-                        Block block = rayChunk.getBlock(blockWrapperX, blockWrapperY, blockWrapperZ);
-                        block.Break();
-                        Debug.Log("brokennnnnn");
-                        //Now you can use methods or properties of your Block class
-                        block.GetChunk().UpdateChunk();
-                        
-                    } else
-                    {
-                        Debug.Log("fail");
-                    }
-
+                    Block hitBlock = terrainManager.getBlock(rayBlockWrapper.getChunkNumber(), rayBlockWrapper.getBlockNumber());
+                    hitBlock.Break();
                 }
                 
             }
