@@ -12,7 +12,7 @@ public enum BlockType
     IronOre
 }
 
-public class Block
+public class Block : MonoBehaviour
 {
     private BlockType type;
     public int height;

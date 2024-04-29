@@ -52,6 +52,7 @@ public class PlayerController : MonoBehaviour
 
         // Rotate player horizontally based on mouse input
         transform.Rotate(Vector3.up * mouseX);
+        rb.angularVelocity = Vector3.zero;
         MovePlayer();
         HandleJump();
         HandleSprint();
@@ -115,21 +116,11 @@ public class PlayerController : MonoBehaviour
                         int blockWrapperX = ((int)rayBlockWrapper.getBlockX());
                         int blockWrapperY = ((int)rayBlockWrapper.getBlockY() - 32);
                         int blockWrapperZ = ((int)rayBlockWrapper.getBlockZ());
-                        if ((int)rayChunk.getChunkX() < 0)
-                        {
-                            blockWrapperX = ((int)rayChunk.getChunkX()-(int)rayBlockWrapper.getBlockX());
-                        }
-                        else
-                        {
-                        }
-
-                        if ((int)rayChunk.getChunkY() < 0)
-                        {
-                            blockWrapperZ = ((int)rayChunk.getChunkZ()-(int)rayBlockWrapper.getBlockZ());
-                        }
-                        else
-                        {
-                        }
+                        int chunkX = ((int)rayChunk.getChunkX());
+                        int chunkY = ((int)rayChunk.getChunkX());
+                        int chunkZ = ((int)rayChunk.getChunkZ());
+                        blockWrapperX = (blockWrapperX - chunkX);
+                        blockWrapperZ = (blockWrapperZ - chunkZ);
 
 
                         Debug.Log(blockWrapperX + ","+blockWrapperY+"," + blockWrapperZ);
@@ -137,7 +128,7 @@ public class PlayerController : MonoBehaviour
                         block.Break();
                         Debug.Log("brokennnnnn");
                         //Now you can use methods or properties of your Block class
-                        rayChunk.UpdateChunk();
+                        block.GetChunk().UpdateChunk();
                         
                     } else
                     {

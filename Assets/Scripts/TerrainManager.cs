@@ -4,7 +4,7 @@ public class TerrainManager : MonoBehaviour
 {
     public GameObject player;
     public GameObject chunkPrefab;
-    public int viewDistance = 1;
+    public int viewDistance = 2;
     private int seed;
 
     private Vector3 lastPlayerChunkPos;
@@ -19,7 +19,7 @@ public class TerrainManager : MonoBehaviour
     {
         seed = Random.Range(0, 100000); 
         lastPlayerChunkPos = GetChunkPosition(player.transform.position);
-        GenerateChunksAroundPlayer(7, true);
+        GenerateChunksAroundPlayer(4, true);
     }
 
     void Update()
@@ -162,7 +162,7 @@ public class TerrainManager : MonoBehaviour
                 foreach (var collider in colliders)
                 {
                     Chunk chunk = collider.GetComponent<Chunk>();
-                    if (chunk != null && !chunk.initialGen)
+                    if (chunk == null || !chunk.initialGen)
                     {
                         // At least one chunk within viewDistance has initialGen as false
                         Debug.Log("Not all chunks in view distance have initialGen set to true.");
