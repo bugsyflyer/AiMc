@@ -357,6 +357,7 @@ MonoBehaviour:
   ignoredLayers:
     serializedVersion: 2
     m_Bits: 64
+  terrainManager: {fileID: 1758881928}
 --- !u!54 &1016496976
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -486,6 +487,7 @@ MonoBehaviour:
   player: {fileID: 1016496974}
   chunkPrefab: {fileID: 5995364280248323639, guid: 444bef5ac08e4c24aaafc0addf94275d, type: 3}
   viewDistance: 2
+  chunkCount: 0
 --- !u!114 &1758881929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -504,12 +506,15 @@ MonoBehaviour:
   biomeType: 0
   plainsChance: 0.1
   initialGen: 0
+  chunkNumber: 0
+  blockCount: 0
   dirtPrefab: {fileID: 5363048689132303938, guid: 1b77d60007e426e4a8972cced4651d83, type: 3}
   stonePrefab: {fileID: 3261941439026709056, guid: c2ec7a6c85cad404e94fc375df565334, type: 3}
   grassPrefab: {fileID: 284828820230813672, guid: 5903f30cfe82c434ab98eb9b8cab6e83, type: 3}
   woodPrefab: {fileID: 4269519478641738600, guid: 74901a62d0386a84fb82ca954fd95197, type: 3}
   leavesPrefab: {fileID: 6325048894435533183, guid: 289054273e41c4042bf79aa7dca496e4, type: 3}
   waterPrefab: {fileID: 0}
+  terrainManager: {fileID: 1758881928}
 --- !u!4 &1758881930
 Transform:
   m_ObjectHideFlags: 0

@@ -108,10 +108,9 @@ public class PlayerController : MonoBehaviour
                 BlockWrapper rayBlockWrapper = hit.collider.GetComponent<BlockWrapper>();
                 if (rayBlockWrapper != null)
                 {
-                    rayBlockWrapper.Break();
-                    Debug.Log("not nu;;");
                     Block hitBlock = terrainManager.getBlock(rayBlockWrapper.getChunkNumber(), rayBlockWrapper.getBlockNumber());
                     hitBlock.Break();
+                    rayBlockWrapper.Break();
                 }
                 
             }

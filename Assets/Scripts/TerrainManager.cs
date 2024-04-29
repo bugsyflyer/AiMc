@@ -9,7 +9,7 @@ public class TerrainManager : MonoBehaviour
     private int seed;
 
     
-    static int chunkCount = 0;
+    public int chunkCount = 0;
 
     //public ArrayList<Chunks> chunkList = new ArrayList<Chunks>();
     //2d arraylist of blocks
@@ -64,7 +64,7 @@ public class TerrainManager : MonoBehaviour
                 if (isChunkVisible)
                 {
                     // Generate or update the chunk if it's within view distance
-                    GenerateChunk(chunkPos, isInitialGen, chunkCount);
+                    GenerateChunk(chunkPos, isInitialGen);
                 }
                 else
                 {
@@ -93,7 +93,7 @@ public class TerrainManager : MonoBehaviour
         }
     }
 
-    private void GenerateChunk(Vector3 position, bool isInitialGen, int chunkCount)
+    private void GenerateChunk(Vector3 position, bool isInitialGen)
     {
         Collider[] colliders = Physics.OverlapBox(position + new Vector3(Chunk.ChunkSize / 2f, 0, Chunk.ChunkSize / 2f),
             new Vector3(Chunk.ChunkSize / 2f, Chunk.ChunkSize / 2f, Chunk.ChunkSize / 2f));
@@ -116,10 +116,12 @@ public class TerrainManager : MonoBehaviour
         Chunk newChunk = newChunkObj.GetComponent<Chunk>();
         newChunk.setChunkNumber(chunkCount);
         //chunkList.Add(newChunk);
+        List<Block> newList = new List<Block>();
+        blocks.Add(newList);
         newChunk.setInitial(isInitialGen);
         newChunk.GenerateTerrain(seed, chunkCount); // Generate terrain for the chunk
-        newChunk.UpdateChunk(); // Update visuals
         chunkCount++;
+        newChunk.UpdateChunk(); // Update visuals
     }
 
     public static Vector3 GetChunkPosition(Vector3 position)

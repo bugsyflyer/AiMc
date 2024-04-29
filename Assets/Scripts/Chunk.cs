@@ -22,7 +22,7 @@ public class Chunk : MonoBehaviour
     public bool initialGen;
     public int chunkNumber;
 
-    int blockCount = 0;
+    public int blockCount = 0;
 
     public GameObject dirtPrefab;
     public GameObject stonePrefab;
@@ -32,6 +32,12 @@ public class Chunk : MonoBehaviour
     public GameObject waterPrefab;
 
     public TerrainManager terrainManager;
+
+    void Awake()
+    {
+        // Find TerrainManager script in the scene
+        terrainManager = FindObjectOfType<TerrainManager>();
+    }
 
     public void setInitial(bool initial)
     {
@@ -97,24 +103,31 @@ public class Chunk : MonoBehaviour
                     {
                         blocks[x, y, z] = new Block(BlockType.Dirt, height, this, blockCount, chunkCount);
                         blockCount++;
+                        List<Block> retrievedList = terrainManager.blocks[chunkCount];
+                        retrievedList.Add(blocks[x,y,z]);
 
                     }
                     else if (y == height)
                     {
                         blocks[x, y, z] = new Block(BlockType.Grass, height, this, blockCount, chunkCount);
                         blockCount++;
+                        List<Block> retrievedList = terrainManager.blocks[chunkCount];
+                        retrievedList.Add(blocks[x,y,z]);
                     }
                     else if (y < height)
                     {
                         blocks[x, y, z] = new Block(BlockType.Stone, height, this, blockCount, chunkCount);
                         blockCount++;
+                        List<Block> retrievedList = terrainManager.blocks[chunkCount];
+                        retrievedList.Add(blocks[x,y,z]);
                     }
                     else
                     {
                         blocks[x, y, z] = new Block(BlockType.Air, height, this, blockCount, chunkCount);
                         blockCount++; // Empty space above terrain
                         //add blocks[x,y,z] to blocks in terrain manager at chunkcount, blockcount
-                        terrainManager.blocks[chunkCount][blockCount] = blocks[x,y,z];
+                        List<Block> retrievedList = terrainManager.blocks[chunkCount];
+                        retrievedList.Add(blocks[x,y,z]);
 
                     }
                 }
