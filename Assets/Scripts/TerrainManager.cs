@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
 public class TerrainManager : MonoBehaviour
@@ -11,7 +12,7 @@ public class TerrainManager : MonoBehaviour
     
     public int chunkCount = 0;
 
-    //public ArrayList<Chunks> chunkList = new ArrayList<Chunks>();
+    public List<Chunk> chunkList = new List<Chunk>();
     //2d arraylist of blocks
     public List<List<Block>> blocks = new List<List<Block>>();
 
@@ -28,7 +29,61 @@ public class TerrainManager : MonoBehaviour
         //returns the block in blocks at given x and z
         return blocks[x][z];
     }
+
+    public void Restart()
+    {
+        DestroyAllBlocks();
+        foreach (Chunk chunk in chunkList)
+        {
+                ClearBlocks(chunk.blocks);
+                Destroy(chunk);
+        }
+        chunkList.Clear();
+        
+    }
     
+    public void DestroyAllBlocks()
+    {
+        // Iterate through each inner list
+        foreach (List<Block> innerList in blocks)
+        {
+            // Iterate through each block in the inner list
+            foreach (Block block in innerList)
+            {
+                if (block != null)
+                {
+                    // Destroy the block's GameObject (assuming Block has a GameObject reference)
+                    block.Break();
+                }
+            }
+
+            // Clear the inner list after destroying blocks
+            innerList.Clear();
+        }
+
+        // Clear the outer list after destroying blocks in all inner lists
+        blocks.Clear();
+    }
+    
+    private void ClearBlocks(Block[,,] blocksArray)
+    {
+        int sizeX = blocksArray.GetLength(0);
+        int sizeY = blocksArray.GetLength(1);
+        int sizeZ = blocksArray.GetLength(2);
+
+        for (int x = 0; x < sizeX; x++)
+        {
+            for (int y = 0; y < sizeY; y++)
+            {
+                for (int z = 0; z < sizeZ; z++)
+                {
+                    blocksArray[x, y, z] = null; // Or set to a default value as needed
+                }
+            }
+        }
+    }
+
+
     void GenerateWorld()
     {
         seed = Random.Range(0, 100000); 
@@ -115,7 +170,7 @@ public class TerrainManager : MonoBehaviour
         newChunkObj.transform.SetParent(transform); // Attach to TerrainManager object
         Chunk newChunk = newChunkObj.GetComponent<Chunk>();
         newChunk.setChunkNumber(chunkCount);
-        //chunkList.Add(newChunk);
+        chunkList.Add(newChunk);
         List<Block> newList = new List<Block>();
         blocks.Add(newList);
         newChunk.setInitial(isInitialGen);

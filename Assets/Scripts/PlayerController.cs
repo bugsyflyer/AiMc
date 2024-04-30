@@ -1,9 +1,10 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-    public float walkSpeed = 4f;
-    public float sprintSpeed = 7f;
+    public float walkSpeed = 2f;
+    public float sprintSpeed = 5f;
     public float jumpHeight = 1.5f;
     public int startingHealth = 100;
     public float fallDamageThreshold = 9f;
@@ -100,11 +101,9 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("button pressed");
             RaycastHit hit;
-            if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, maxDistance, blockLayerMask))
+            if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, maxDistance))
             {
-                Debug.Log("hit?");
                 BlockWrapper rayBlockWrapper = hit.collider.GetComponent<BlockWrapper>();
                 if (rayBlockWrapper != null)
                 {

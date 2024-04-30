@@ -7,11 +7,7 @@ public class SceneController : MonoBehaviour
     {
         // Reload the current scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        GameObject[] dynamicObjects = GameObject.FindGameObjectsWithTag("DynamicObject");
-        foreach (GameObject obj in dynamicObjects)
-        {
-            Destroy(obj);
-        }
+        
     }
 }
 

@@ -21,6 +21,7 @@ public class BlockWrapper : MonoBehaviour
 
     public void Break()
     {
+        Debug.Log("deleted");
         Destroy(gameObject);
     }
 
