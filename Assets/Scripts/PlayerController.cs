@@ -3,8 +3,8 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-    public float walkSpeed = 2f;
-    public float sprintSpeed = 5f;
+    public float walkSpeed = 6f;
+    public float sprintSpeed = 10f;
     public float jumpHeight = 1.5f;
     public int startingHealth = 100;
     public float fallDamageThreshold = 9f;
@@ -102,13 +102,17 @@ public class PlayerController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
-            if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, maxDistance))
+            if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out hit, maxDistance, blockLayerMask))
             {
                 BlockWrapper rayBlockWrapper = hit.collider.GetComponent<BlockWrapper>();
                 if (rayBlockWrapper != null)
                 {
                     Block hitBlock = terrainManager.getBlock(rayBlockWrapper.getChunkNumber(), rayBlockWrapper.getBlockNumber());
                     hitBlock.Break();
+                    int x = hitBlock.getArrX();
+                    int y = hitBlock.getArrY();
+                    int z = hitBlock.getArrZ();
+                    hitBlock.GetChunk().BlockExposedToAir(x, y, z);
                     rayBlockWrapper.Break();
                 }
                 

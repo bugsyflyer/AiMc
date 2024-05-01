@@ -101,7 +101,7 @@ public class Chunk : MonoBehaviour
                     // Generate grass on top, dirt below grass, and stone below dirt based on height
                     if (y == height - 1)
                     {
-                        blocks[x, y, z] = new Block(BlockType.Dirt, height, this, blockCount, chunkCount);
+                        blocks[x, y, z] = new Block(BlockType.Dirt, height, this, blockCount, chunkCount,x,y,z);
                         blockCount++;
                         List<Block> retrievedList = terrainManager.blocks[chunkCount];
                         retrievedList.Add(blocks[x,y,z]);
@@ -109,21 +109,21 @@ public class Chunk : MonoBehaviour
                     }
                     else if (y == height)
                     {
-                        blocks[x, y, z] = new Block(BlockType.Grass, height, this, blockCount, chunkCount);
+                        blocks[x, y, z] = new Block(BlockType.Grass, height, this, blockCount, chunkCount,x,y,z);
                         blockCount++;
                         List<Block> retrievedList = terrainManager.blocks[chunkCount];
                         retrievedList.Add(blocks[x,y,z]);
                     }
                     else if (y < height)
                     {
-                        blocks[x, y, z] = new Block(BlockType.Stone, height, this, blockCount, chunkCount);
+                        blocks[x, y, z] = new Block(BlockType.Stone, height, this, blockCount, chunkCount,x,y,z);
                         blockCount++;
                         List<Block> retrievedList = terrainManager.blocks[chunkCount];
                         retrievedList.Add(blocks[x,y,z]);
                     }
                     else
                     {
-                        blocks[x, y, z] = new Block(BlockType.Air, height, this, blockCount, chunkCount);
+                        blocks[x, y, z] = new Block(BlockType.Air, height, this, blockCount, chunkCount,x,y,z);
                         blockCount++; // Empty space above terrain
                         //add blocks[x,y,z] to blocks in terrain manager at chunkcount, blockcount
                         List<Block> retrievedList = terrainManager.blocks[chunkCount];
@@ -185,6 +185,51 @@ public class Chunk : MonoBehaviour
         if (z < ChunkSize - 1 && blocks[x, y, z + 1].getType() == BlockType.Air) return true;
 
         return false; // Block is not exposed to air
+    }
+    
+    public void BlockExposedToAir(int x, int y, int z)
+    {
+        // Check neighboring blocks for air
+        if (x > 0&& blocks[x - 1, y, z].getType() != BlockType.Air)
+        {
+            GameObject blockPrefab = GetPrefabForBlock(blocks[x - 1, y, z].getType());
+            Vector3 blockPosition = transform.position + new Vector3(x - 1, y, z); // Calculate block position relative to chunk
+            Instantiate(blockPrefab, blockPosition, Quaternion.identity, transform);
+        }
+
+        if (x < ChunkSize - 1&& blocks[x + 1, y, z].getType() != BlockType.Air)
+        {
+            GameObject blockPrefab = GetPrefabForBlock(blocks[x + 1, y, z].getType());
+            Vector3 blockPosition = transform.position + new Vector3(x + 1, y, z); // Calculate block position relative to chunk
+            Instantiate(blockPrefab, blockPosition, Quaternion.identity, transform);
+        }
+
+        if (y > 0 && blocks[x, y - 1, z].getType() != BlockType.Air)
+        {
+            GameObject blockPrefab = GetPrefabForBlock(blocks[x, y - 1, z].getType());
+            Vector3 blockPosition = transform.position + new Vector3(x, y - 1, z); // Calculate block position relative to chunk
+            Instantiate(blockPrefab, blockPosition, Quaternion.identity, transform);
+        }
+        if (y < ChunkSize - 1 && blocks[x, y + 1, z].getType() != BlockType.Air)
+        {
+            GameObject blockPrefab = GetPrefabForBlock(blocks[x, y + 1, z].getType());
+            Vector3 blockPosition = transform.position + new Vector3(x, y + 1, z); // Calculate block position relative to chunk
+            Instantiate(blockPrefab, blockPosition, Quaternion.identity, transform);
+        }
+
+        if (z > 0 && blocks[x, y, z - 1].getType() != BlockType.Air)
+        {
+            GameObject blockPrefab = GetPrefabForBlock(blocks[x, y, z - 1].getType());
+            Vector3 blockPosition = transform.position + new Vector3(x, y, z - 1); // Calculate block position relative to chunk
+            Instantiate(blockPrefab, blockPosition, Quaternion.identity, transform);
+        }
+
+        if (z < ChunkSize - 1 && blocks[x, y, z + 1].getType() != BlockType.Air)
+        {
+            GameObject blockPrefab = GetPrefabForBlock(blocks[x, y, z + 1].getType());
+            Vector3 blockPosition = transform.position + new Vector3(x, y, z + 1); // Calculate block position relative to chunk
+            Instantiate(blockPrefab, blockPosition, Quaternion.identity, transform);
+        }
     }
 
     private GameObject GetPrefabForBlock(BlockType type)
