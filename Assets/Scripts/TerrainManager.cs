@@ -6,7 +6,7 @@ public class TerrainManager : MonoBehaviour
 {
     public GameObject player;
     public GameObject chunkPrefab;
-    public int viewDistance = 2;
+    public int viewDistance = 1;
     private int seed;
 
     
@@ -88,7 +88,7 @@ public class TerrainManager : MonoBehaviour
     {
         seed = Random.Range(0, 100000); 
         lastPlayerChunkPos = GetChunkPosition(player.transform.position);
-        GenerateChunksAroundPlayer(4, true);
+        GenerateChunksAroundPlayer(3, true);
     }
 
     void Update()
